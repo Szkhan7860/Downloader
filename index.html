@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All-in-One Video Downloader</title>
+  <style>
+    body {
+      background-color: #111;
+      color: #0f0;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    input[type="text"] {
+      width: 80%;
+      padding: 10px;
+      font-size: 16px;
+      margin-bottom: 10px;
+      border: none;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      background-color: #00d1a0;
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 20px;
+    }
+    a {
+      color: #0f0;
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>All-in-One Video Downloader</h1>
+
+  <input type="text" id="videoUrl" placeholder="Paste video link here">
+  <br>
+  <button onclick="downloadVideo()">Download</button>
+
+  <div id="result"></div>
+
+  <script>
+    async function downloadVideo() {
+      const userInput = document.getElementById("videoUrl").value.trim();
+      const apiURL = `https://api-by.eternalowner06.workers.dev/?url=${encodeURIComponent(userInput)}`;
+
+      const resultDiv = document.getElementById("result");
+      resultDiv.innerHTML = "Loading...";
+
+      try {
+        const response = await fetch(apiURL);
+        if (!response.ok) throw new Error("Failed to fetch from API");
+
+        const data = await response.json();
+
+        if (data.medias && data.medias.length > 0) {
+          const videoLink = data.medias[0].url;
+          resultDiv.innerHTML = `
+            <p><strong>Download Link:</strong></p>
+            <a href="${videoLink}" target="_blank">Click here to download</a>
+          `;
+        } else {
+          resultDiv.innerHTML = "No video found in response.";
+        }
+      } catch (error) {
+        console.error(error);
+        resultDiv.innerHTML = "Error: Unable to contact the server.";
+      }
+    }
+  </script>
+
+</body>
+</html>
